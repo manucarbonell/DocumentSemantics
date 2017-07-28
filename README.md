@@ -1,2 +1,2 @@
 # DocumentSemantics
-Document analysis, 
+Machine Learning tools for semantic annotation of scanned document images.
