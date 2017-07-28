@@ -16,7 +16,7 @@ import numpy as np
 experiment_id=os.path.splitext(__file__)[0]
 max_non_improving_epochs=20
 min_epochs=20
-
+verbose_period=50
 def buildModel():
     if K.backend()=='tensorflow':
         inputimage=Input(shape=(None,None,1))
@@ -77,14 +77,17 @@ def getPreviousLabel(example,previous_prediction,true_previous_label,dataset):
     return np.hstack((previous_prediction==np.max(previous_prediction),[[0.]]))
 
 def trainModel(m):
+    print "Train model..."
     E=EsposallesDataset(cvset='train')
     Ev=EsposallesDataset(cvset='validation')
     non_improving_epochs=0
     bestValidationACC=0
-    for epoch in xrange(100):
+    for epoch in range(100):
+        print 'Epoch: ',epoch,'================='
         accs=[]
         losses=[]
         predicted_label=np.asarray([[0.,0.,0.,0.,0.,0.,1.]],dtype='float32') #Start register
+
         for j in xrange (E.numberSamples):
             x,y,example_id=E.get_example()
 
@@ -93,9 +96,11 @@ def trainModel(m):
             previous_label=getPreviousLabel(example_id,predicted_label,False,E)
             predicted_label=m.predict_on_batch([x,previous_label])
             l,a=m.train_on_batch([x,previous_label],y)#,class_weight=E.class_weights)
+            if j % verbose_period == 0 and j>0:
+                print "Epoch",epoch,"step",j," loss ",np.sum(losses[j-verbose_period:j])
             accs.append(a)
             losses.append(l)
-        print 'epoch: ',epoch,'================='
+
         print 'avg training loss:  ',np.mean(losses),'avg training accuracy:  ',np.mean(accs)
         accs=[]
         predicted_label=np.asarray([[0.,0.,0.,0.,0.,0.,1.]],dtype='float32') #Start register
