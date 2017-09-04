@@ -80,6 +80,8 @@ def trainModel(m):
     print "Train model..."
     E=EsposallesDataset(cvset='train')
     Ev=EsposallesDataset(cvset='validation')
+    if not os.path.exists('saved_weights'):
+        os.mkdir('saved_weights')
     non_improving_epochs=0
     bestValidationACC=0
     for epoch in range(100):
@@ -98,6 +100,8 @@ def trainModel(m):
             l,a=m.train_on_batch([x,previous_label],y)#,class_weight=E.class_weights)
             if j % verbose_period == 0 and j>0:
                 print "Epoch",epoch,"step",j," loss ",np.sum(losses[j-verbose_period:j])
+            if j % 500  == 0:
+                m.save_weights('./saved_weights/'+experiment_id+'_esposalles.h5',overwrite=True)
             accs.append(a)
             losses.append(l)
 
