@@ -12,11 +12,12 @@ import keras.backend as K
 
 import os
 import numpy as np
+import config
 
 experiment_id=os.path.splitext(__file__)[0]
-max_non_improving_epochs=20
-min_epochs=20
-verbose_period=50
+max_non_improving_epochs=config.max_non_improving_epochs
+min_epochs=config.min_epochs
+verbose_period=config.verbose_period
 def buildModel():
     if K.backend()=='tensorflow':
         inputimage=Input(shape=(None,None,1))

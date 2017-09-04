@@ -9,14 +9,26 @@ import numpy as np
 import string
 import cv2
 import re
+def natural_key(string_):
+    return [int(s) if s.isdigit() else s for s in re.split(r'(\d+)', string_)]
+import sys
+import os
 from keras import backend as K
 from PIL import Image
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import config
+
+batch_size=config.batch_size
+im_height=config.im_height
+im_width=config.im_width
+
 class EsposallesDataset():
-    def __init__(self,BaseDir='/home/ntoledo/datasets/OfficialEsposalles',cvset='train'):
+    def __init__(self,BaseDir='/home/ntoledo/datasets/OfficialEsposalles',cvset='train',level='word'):
         self.BaseDir=BaseDir
         self.DataDir=BaseDir+'/'+cvset
         self.GroundTruth=self.DataDir+'/category_groundtruth.txt'
+        self.level=level
         self.labels={}
         with open(self.GroundTruth, mode='r') as infile:
             for line in infile:
@@ -33,7 +45,7 @@ class EsposallesDataset():
         self.numberSamples=len(self.labels.keys())
     def generate_previous_labels_and_regdict(self):
         l=self.labels.keys()
-        l.sort()
+        l=sorted(l,key=natural_key)
         prevlabel=6
         prevpag,prevreg,pag,reg=(0,0,0,0)
         self.prevlabels={}
@@ -53,7 +65,7 @@ class EsposallesDataset():
                self.prevlabels[s]=prevlabel
             prevpag=pag
             prevreg=reg
-    def get_example(self,sequence=False):
+    def get_example(self):
         #minx=30
         #miny=30
         def readNormalizedImage(imageid):
@@ -65,7 +77,7 @@ class EsposallesDataset():
             return np.pad(img,(max(0,30-height),max(0,30-width)),'constant')
             #return img
         #while True:
-        if not sequence:
+        if self.level=='word':
             try:
                  current_example=self.word_iterator.next()
                  self.w_id+=1
@@ -93,7 +105,6 @@ class EsposallesDataset():
 
         else:
             self.r_id=self.register_iterator.next()
-            print self.reg_dict[self.r_id]
             self.word_iterator=iter(self.reg_dict[self.r_id])
             example_seq=[]
             labels_seq=[]
@@ -120,10 +131,15 @@ class EsposallesDataset():
 
 
 def test_input():
-    ims,labs,names=EsposallesDataset(cvset='train').get_example(sequence=True)
+    ims,labs,names=EsposallesDataset(cvset='train',level='sequence').get_example()
     print EsposallesDataset(cvset='train').labeldict
+    widths=[]
+    heights=[]
     for i in range(len(ims)):
+
         im=ims[i]
+        heights.append(im.shape[1])
+        widths.append(im.shape[2])
         im=im*255
         im=im.astype('uint8')
         im=im[0][:,:,0]
@@ -131,14 +147,18 @@ def test_input():
 
         im=Image.fromarray(im)
         im.show()
-        raw_input()
-    '''im,lab,name=EsposallesDataset(cvset='train').get_example()
+    print np.mean(heights)
+
+    print np.mean(widths)
+    '''
+    im,lab,name=EsposallesDataset(cvset='train').get_example()
     im=im*255
     im=im.astype('uint8')
     im=im[0][:,:,0]
     print im,type(im),im.shape
     im=Image.fromarray(im)
     im.show()
+
     '''
 
-#test_input()
+test_input()
