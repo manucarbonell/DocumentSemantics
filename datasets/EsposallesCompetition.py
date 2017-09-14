@@ -4,10 +4,8 @@ Created on Thu Jan 21 15:12:24 2016
 
 @author: jtoledo
 """
-import csv
+
 import numpy as np
-import string
-import cv2
 import re
 def natural_key(string_):
     return [int(s) if s.isdigit() else s for s in re.split(r'(\d+)', string_)]
@@ -16,6 +14,7 @@ import os
 from keras import backend as K
 from PIL import Image
 import matplotlib.pyplot as plt
+from keras.utils import np_utils
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
@@ -39,6 +38,7 @@ class EsposallesDataset():
         self.generate_previous_labels_and_regdict()
         self.shuffled_registers=[k for k in self.reg_dict.iterkeys()]
         self.register_iterator=iter(self.shuffled_registers)
+        self.epoch_size = len(self.shuffled_registers)
         self.r_id=self.register_iterator.next()
         self.word_iterator=iter(self.reg_dict[self.r_id])
         self.w_id=-1
@@ -95,6 +95,7 @@ class EsposallesDataset():
                self.prevlabels[s]=prevlabel
             prevpag=pag
             prevreg=reg
+
     def get_batch(self,show_word_ids=False):
 
         self.word_iterator=iter(self.reg_dict[self.r_id])
@@ -116,6 +117,9 @@ class EsposallesDataset():
 
         X = np.stack(X)
         X=X[np.newaxis,:,:,:,:]
+        Y = np_utils.to_categorical(Y, config.n_classes)
+        Y=Y[np.newaxis,:,:]
+
         return X,Y,IDS
 
 
@@ -123,25 +127,26 @@ class EsposallesDataset():
         if self.revdict is None: self.revdict={v:k for (k,v) in self.labeldict.iteritems()}
         return [','.join([self.revdict[timestep] for timestep in sample]).rstrip(',0') for sample in predictions]
 
+    def show_batch(self):
 
-
-def test_input():
-    E=EsposallesDataset(cvset='train',level='sequence')
-    for i in range(10):
-        ims,labs,names=E.get_batch()
+        ims,labs,names=self.get_batch()
         widths=[]
         heights=[]
 
         for i in range(len(ims[0,:,:,:,0])):
             im=ims[0,i,:,:,0]
+
             print im.shape
-            heights.append(im.shape[0])
-            widths.append(im.shape[1])
+
             im=im.astype('uint8')
             imgplot = plt.imshow(im)
 
-            print names[i],labs[i]
+            print names[i],labs[0,i,:]
             plt.show()
 
+def main():
+    E=EsposallesDataset()
+    E.show_batch()
 
-#test_input()
+if __name__=="__main__":
+    main()

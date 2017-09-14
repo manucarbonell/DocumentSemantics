@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b6c4a03-04ae-400d-a46d-d81793b196a9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.py" afterPath="$PROJECT_DIR$/config.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/datasets/EsposallesCompetition.py" afterPath="$PROJECT_DIR$/datasets/EsposallesCompetition.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sssprSequential.py" afterPath="$PROJECT_DIR$/sssprSequential.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -15,13 +16,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="EsposallesCompetition.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/datasets/EsposallesCompetition.py">
+      <file leaf-file-name="sssprSequential.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/sssprSequential.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="830">
-              <caret line="115" column="0" lean-forward="true" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
+            <state relative-caret-position="-30">
+              <caret line="94" column="8" lean-forward="false" selection-start-line="94" selection-start-column="8" selection-end-line="94" selection-end-column="8" />
               <folding>
-                <element signature="e#86#96#0" expanded="true" />
+                <element signature="e#0#60#0" expanded="true" />
+                <element signature="e#2267#2407#0" expanded="false" />
+                <element signature="e#2441#2520#0" expanded="false" />
+                <element signature="e#2605#2995#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -30,20 +34,20 @@
       <file leaf-file-name="config.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="54">
-              <caret line="3" column="17" lean-forward="false" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
+            <state relative-caret-position="0">
+              <caret line="0" column="12" lean-forward="false" selection-start-line="0" selection-start-column="12" selection-end-line="0" selection-end-column="12" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sssprSequential.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/sssprSequential.py">
+      <file leaf-file-name="EsposallesCompetition.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/datasets/EsposallesCompetition.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="48" column="0" lean-forward="false" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+            <state relative-caret-position="1007">
+              <caret line="77" column="35" lean-forward="true" selection-start-line="77" selection-start-column="35" selection-end-line="77" selection-end-column="35" />
               <folding>
-                <element signature="e#0#60#0" expanded="true" />
+                <element signature="e#87#105#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -53,19 +57,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>saved</find>
-      <find>experiment</find>
-      <find>filenam</find>
-      <find>mpimg</find>
-      <find>he</find>
-      <find>input</find>
-      <find>n_cl</find>
-      <find>confi</find>
-      <find>-1</find>
-      <find>print</find>
-      <find>tk</find>
-      <find>reg_dic</find>
-      <find>next</find>
       <find>get_bat</find>
       <find>get_ex</find>
       <find>shuff</find>
@@ -83,6 +74,19 @@
       <find>verbose_</find>
       <find>verbose</find>
       <find>type</find>
+      <find>y</find>
+      <find>utils</find>
+      <find>_utils</find>
+      <find>get_b</find>
+      <find>batch</find>
+      <find>optimizer</find>
+      <find>ea</find>
+      <find>number</find>
+      <find>labels.k</find>
+      <find>labels</find>
+      <find>it</find>
+      <find>non_im</find>
+      <find>print</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -92,8 +96,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/datasets/matplotlibexample.py" />
-        <option value="$PROJECT_DIR$/datasets/EsposallesCompetition.py" />
         <option value="$PROJECT_DIR$/config.py" />
+        <option value="$PROJECT_DIR$/datasets/EsposallesCompetition.py" />
         <option value="$PROJECT_DIR$/sssprSequential.py" />
       </list>
     </option>
@@ -240,7 +244,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32924336" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18609408" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3425358" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -260,7 +264,9 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <option name="time" value="2" />
+    </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
@@ -295,28 +301,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="3" column="17" lean-forward="false" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
+        <state relative-caret-position="0">
+          <caret line="0" column="12" lean-forward="false" selection-start-line="0" selection-start-column="12" selection-end-line="0" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/datasets/EsposallesCompetition.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="830">
-          <caret line="115" column="0" lean-forward="true" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
+        <state relative-caret-position="1007">
+          <caret line="77" column="35" lean-forward="true" selection-start-line="77" selection-start-column="35" selection-end-line="77" selection-end-column="35" />
           <folding>
-            <element signature="e#86#96#0" expanded="true" />
+            <element signature="e#87#105#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sssprSequential.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="48" column="0" lean-forward="false" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+        <state relative-caret-position="-30">
+          <caret line="94" column="8" lean-forward="false" selection-start-line="94" selection-start-column="8" selection-end-line="94" selection-end-column="8" />
           <folding>
             <element signature="e#0#60#0" expanded="true" />
+            <element signature="e#2267#2407#0" expanded="false" />
+            <element signature="e#2441#2520#0" expanded="false" />
+            <element signature="e#2605#2995#0" expanded="false" />
           </folding>
         </state>
       </provider>

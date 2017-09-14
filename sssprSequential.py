@@ -33,11 +33,11 @@ def buildModel():
     x=Conv2D(64,(3,3),padding='same',activation='relu')(x)
     x=Conv2D(64,(3,3),padding='same',activation='relu')(x)
     x=MaxPooling2D(pool_size=(2,2))(x)
-    x=Conv2D(128,(3,3),padding='same',activation='relu')(x)
-    x=Conv2D(128,(3,3),padding='same',activation='relu')(x)
+    #x=Conv2D(128,(3,3),padding='same',activation='relu')(x)
+    #x=Conv2D(128,(3,3),padding='same',activation='relu')(x)
     x=Conv2D(256,(3,3),padding='same',activation='relu')(x)
     x=SpatialPyramidPooling([1, 2, 4])(x)
-    x=Dense(2048,activation='relu')(x)
+    #x=Dense(2048,activation='relu')(x)
     x=Dropout(0.5)(x)
     x=Dense(512,activation='relu')(x)
     x=Dropout(0.5)(x)
@@ -92,27 +92,29 @@ def trainModel(m):
         accs=[]
         losses=[]
 
-        for j in xrange (E.numberSamples):
+        for j in range(E.epoch_size/config.batch_size):
+
             x,y,example_id=E.get_batch()
 
-            y=np_utils.to_categorical(y,config.n_classes)
-            y=smoothlabel(y)
-            l,a=m.train_on_batch([x],y[np.newaxis,:,:])#,class_weight=E.class_weights)
+            #y=smoothlabel(y)
+
+            l,a=m.train_on_batch([x],y)#,class_weight=E.class_weights)
+
             if j % verbose_period == 0 and j>0:
                 print "Epoch",epoch,"step",j," loss ",np.sum(losses[j-verbose_period:j])
-            if j % 500  == 0:
-                m.save_weights('./saved_weights/sequence_'+experiment_id+'_esposalles.h5',overwrite=True)
+
             accs.append(a)
             losses.append(l)
 
         print 'avg training loss:  ',np.mean(losses),'avg training accuracy:  ',np.mean(accs)
         accs=[]
-        predicted_label=np.asarray([[0.,0.,0.,0.,0.,0.,1.]],dtype='float32') #Start register
-        for jv in xrange (Ev.numberSamples):
+
+        for jv in range(E.epoch_size/config.batch_size):
+
             x,y,example_id=Ev.get_batch()
-            y=np_utils.to_categorical(y,config.n_classes)
-            y=smoothlabel(y)
-            l,a=m.evaluate([x],y[np.newaxis,:,:],verbose=0)#,class_weight=E.class_weights)
+            print "validation..."
+            #y=smoothlabel(y)
+            l,a=m.evaluate([x],y,verbose=0)
             accs.append(a)
             losses.append(l)
         print 'avg validation loss:',np.mean(losses),'avg validation accuracy:',np.mean(accs)
@@ -129,41 +131,43 @@ def trainModel(m):
                 break
     print 'done'
 
-def evaluateModel(m,true_previous_label=False,show_confmat=False):
+def evaluateModel(m,show_confmat=False):
     E=EsposallesDataset(cvset='test')
     m.load_weights('./saved_weights/'+experiment_id+'_esposalles.h5')
     revdict={v:k for (k,v) in E.labeldict.iteritems()}
     accs=[]
     losses=[]
     confmat=np.zeros((6,6),dtype='int32')
-    predicted_label=np.asarray([[0.,0.,0.,0.,0.,0.,1.]],dtype='float32') #Start register
+
     print E.numberSamples
     for j in xrange (E.numberSamples):
         x,y,example_id=E.get_batch();
-        previous_label=getPreviousLabel(example_id,predicted_label,true_previous_label,E)
+
         #predict current label
-        predicted_label=m.predict_on_batch([x,previous_label])
+        predicted_label=m.predict_on_batch([x])
         y_pred=np.argmax(predicted_label[0])
         print "%s,%s"% (example_id,revdict[y_pred])#,revdict[y[0]]
         confmat[np.argmax(predicted_label),y[0]]+=1
         confmat[y_pred,y[0]]+=1
         y=np_utils.to_categorical(y,6)
-        l,a=m.evaluate([x,previous_label],y,verbose=0)
+        l,a=m.evaluate([x],y,verbose=0)
         accs.append(a)
         losses.append(l)
-    if true_previous_label:
-       print 'best case',
+
     print 'accuracy,loss:',np.mean(accs),np.mean(losses)
     if show_confmat:
        print 'confmat:'
        print confmat
 
+def main():
+    m=buildModel()
 
+    trainModel(m)
+    print "Training finished."
+    print "Testing model..."
+    evaluateModel(m,true_previous_label=True)
+    #
+    # evaluateModel(m)
 
-m=buildModel()
-#print "Training..."
-trainModel(m)
-print "Testing..."
-#evaluateModel(m,true_previous_label=True)
-#
-# evaluateModel(m)
+if __name__=="__main__":
+    main()

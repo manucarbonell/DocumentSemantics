@@ -1,4 +1,4 @@
-batch_size=100
+batch_size=1
 max_non_improving_epochs=20
 min_epochs=20
 verbose_period=10
