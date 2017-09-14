@@ -1,6 +1,9 @@
 batch_size=100
 max_non_improving_epochs=20
 min_epochs=20
-verbose_period=50
+verbose_period=10
 im_height=80
 im_width=125
+im_depth=1
+n_classes=6
+max_seq_len=35

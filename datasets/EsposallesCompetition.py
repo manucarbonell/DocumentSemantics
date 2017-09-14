@@ -15,6 +15,7 @@ import sys
 import os
 from keras import backend as K
 from PIL import Image
+import matplotlib.pyplot as plt
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
@@ -22,11 +23,6 @@ import config
 batch_size=config.batch_size
 im_height=config.im_height
 im_width=config.im_width
-
-def PIL2array(img):
-    return np.array(img.getdata(),
-                    np.uint8).reshape(img.size[1], img.size[0], 3)
-
 
 class EsposallesDataset():
     def __init__(self,BaseDir='/home/ntoledo/datasets/OfficialEsposalles',cvset='train',level='word'):
@@ -50,20 +46,32 @@ class EsposallesDataset():
         self.numberSamples=len(self.labels.keys())
 
     def readNormalizedImage(self,imageid):
+        # Read image from file
         v=imageid.split('_');
         filename=self.DataDir+'/'+'_'.join(v[0:2])+'/words/'+imageid+".png"
-        #img=1.-cv2.imread(filename,cv2.IMREAD_GRAYSCALE)/255.
         im=Image.open(filename)
 
-        #Paste image in fixed size background
+        #Resize image to fit maximum size
         maxsize = (config.im_height,config.im_width)
         im.thumbnail(maxsize)
-        background=Image.fromarray(np.zeros(maxsize))
-        background.paste(im)
+
+        #Create background to paste image into
+        background=np.zeros(maxsize)
+        im=np.array(im)
+        average_bckg_color=int(np.mean(im[np.where(im<100)]))
+        background.fill(average_bckg_color)
+        background=Image.fromarray(background)
+
+        #Invert image values
+        im=255-np.array(im)
+
+        #Paste image centered into grey background
+        im=Image.fromarray(im)
+        background.paste(im,box=(maxsize[1]/2-im.size[0]/2,maxsize[0]/2-im.size[1]/2))
         im=np.array(background)
 
         return im
-        #return np.pad(img,(max(0,30-height),max(0,30-width)),'constant')
+
 
     def generate_previous_labels_and_regdict(self):
         l=self.labels.keys()
@@ -87,56 +95,28 @@ class EsposallesDataset():
                self.prevlabels[s]=prevlabel
             prevpag=pag
             prevreg=reg
-    def get_example(self):
-        #minx=30
-        #miny=30
-        #return img
-        #while True:
-        if self.level=='word':
-            try:
-                 current_example=self.word_iterator.next()
-                 self.w_id+=1
-            except StopIteration: #If no more words, go next register
-                   try:
-                       self.r_id=self.register_iterator.next()
-                   except StopIteration: #if no more register, shuffle and get first register again
-                          np.random.shuffle(self.shuffled_registers)
-                          self.register_iterator=iter(self.shuffled_registers)
-                          self.r_id=self.register_iterator.next()
-                          self.epoch+=1
-                   self.word_iterator=iter(self.reg_dict[self.r_id])
-                   current_example=self.word_iterator.next()
-                   self.w_id=0
-            X=readNormalizedImage(current_example)
-            #if X.shape[-2] >= miny and X.shape[-1] >= minx:
-            #   #print current_example,self.labels[current_example],X.shape[-2],X.shape[-1]
-            #   break;
-            #print 'Image too small: ',current_example,self.labels[current_example],X.shape[-2],X.shape[-1]
-            Y=[self.labeldict[self.labels[current_example]]]
-            xout=np.asarray(X)[np.newaxis,np.newaxis,:,:]
-            if K.backend()=='tensorflow':
-                xout=xout[0,:,:,:,np.newaxis]
-            return xout,np.asarray(Y),current_example
+    def get_batch(self,show_word_ids=False):
 
-        else:
-            self.word_iterator=iter(self.reg_dict[self.r_id])
-            if K.backend()=='tensorflow':
-                X=[np.asarray(self.readNormalizedImage(i))[:,:,np.newaxis] for i in self.word_iterator]
-            else:
-                X=[np.asarray(self.readNormalizedImage(i))[np.newaxis,:,:] for i in self.word_iterator]
-            self.word_iterator=iter(self.reg_dict[self.r_id])
-            Y=[np.asarray(self.labeldict[self.labels[i]]) for i in self.word_iterator]
-            self.word_iterator=iter(self.reg_dict[self.r_id])
-            IDS=[i for i in self.word_iterator]
-            try:
-                self.r_id=self.register_iterator.next()
-            except StopIteration: #if no more register, shuffle and get first register again
-                np.random.shuffle(self.shuffled_registers)
-                self.register_iterator=iter(self.shuffled_registers)
-                self.r_id=self.register_iterator.next()
-                self.epoch+=1
-            print X[0].shape
-            return X,Y,IDS
+        self.word_iterator=iter(self.reg_dict[self.r_id])
+        IDS=[i for i in self.word_iterator]
+
+        self.word_iterator = iter(self.reg_dict[self.r_id])
+        X=[np.asarray(self.readNormalizedImage(i))[:,:,np.newaxis] for i in self.word_iterator]
+
+        self.word_iterator=iter(self.reg_dict[self.r_id])
+        Y=[np.asarray(self.labeldict[self.labels[i]]) for i in self.word_iterator]
+
+        try:
+            self.r_id=self.register_iterator.next()
+        except StopIteration: #if no more register, shuffle and get first register again
+            np.random.shuffle(self.shuffled_registers)
+            self.register_iterator=iter(self.shuffled_registers)
+            self.r_id=self.register_iterator.next()
+            self.epoch+=1
+
+        X = np.stack(X)
+        X=X[np.newaxis,:,:,:,:]
+        return X,Y,IDS
 
 
     def get_transcription_from_categorical(self,predictions):
@@ -146,31 +126,22 @@ class EsposallesDataset():
 
 
 def test_input():
-    ims,labs,names=EsposallesDataset(cvset='train',level='sequence').get_example()
-    widths=[]
-    heights=[]
-    for i in range(len(ims)):
-        im=ims[i]
+    E=EsposallesDataset(cvset='train',level='sequence')
+    for i in range(10):
+        ims,labs,names=E.get_batch()
+        widths=[]
+        heights=[]
 
-        heights.append(im.shape[0])
-        widths.append(im.shape[1])
-        #im=im*255
-        im=im.astype('uint8')
-        print labs[i],names[i],im.shape
-        im=Image.fromarray(im[:,:,0])
-        im.show()
-    print np.mean(heights)
+        for i in range(len(ims[0,:,:,:,0])):
+            im=ims[0,i,:,:,0]
+            print im.shape
+            heights.append(im.shape[0])
+            widths.append(im.shape[1])
+            im=im.astype('uint8')
+            imgplot = plt.imshow(im)
 
-    print np.mean(widths)
-    '''
-    im,lab,name=EsposallesDataset(cvset='train').get_example()
-    im=im*255
-    im=im.astype('uint8')
-    im=im[0][:,:,0]
-    print im,type(im),im.shape
-    im=Image.fromarray(im)
-    im.show()
+            print names[i],labs[i]
+            plt.show()
 
-    '''
 
-test_input()
+#test_input()
