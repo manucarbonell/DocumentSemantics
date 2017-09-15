@@ -63,14 +63,12 @@ class EsposallesDataset():
         background.fill(average_bckg_color)
         background=Image.fromarray(background)
 
-        #Invert image values
-        im=255-np.array(im)
-
         #Paste image centered into grey background
         im=Image.fromarray(im)
         background.paste(im,box=(maxsize[1]/2-im.size[0]/2,maxsize[0]/2-im.size[1]/2))
         im=np.array(background)
-        ⁠⁠⁠im = 1. - np.array(im) / 255
+        im= 1.-np.array(im)/255.
+
         return im
 
 

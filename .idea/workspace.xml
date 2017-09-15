@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b6c4a03-04ae-400d-a46d-d81793b196a9" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.py" afterPath="$PROJECT_DIR$/config.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/datasets/EsposallesCompetition.py" afterPath="$PROJECT_DIR$/datasets/EsposallesCompetition.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sssprSequential.py" afterPath="$PROJECT_DIR$/sssprSequential.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,10 +13,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="sssprSequential.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="sssprSequential.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sssprSequential.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-18">
+            <state relative-caret-position="182">
               <caret line="86" column="39" lean-forward="false" selection-start-line="86" selection-start-column="39" selection-end-line="86" selection-end-column="39" />
               <folding>
                 <element signature="e#0#60#0" expanded="true" />
@@ -28,11 +25,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="EsposallesCompetition.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="EsposallesCompetition.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/datasets/EsposallesCompetition.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="434">
-              <caret line="67" column="0" lean-forward="true" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+              <caret line="67" column="55" lean-forward="false" selection-start-line="67" selection-start-column="55" selection-end-line="67" selection-end-column="55" />
               <folding>
                 <element signature="e#87#105#0" expanded="true" />
               </folding>
@@ -145,7 +142,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.EsposallesCompetition">
+  <component name="RunManager" selected="Python.sssprSequential">
     <configuration name="EsposallesCompetition" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -204,8 +201,8 @@
     </list>
     <recent_temporary>
       <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Python.EsposallesCompetition" />
-        <item index="1" class="java.lang.String" itemvalue="Python.sssprSequential" />
+        <item index="0" class="java.lang.String" itemvalue="Python.sssprSequential" />
+        <item index="1" class="java.lang.String" itemvalue="Python.EsposallesCompetition" />
         <item index="2" class="java.lang.String" itemvalue="Python.matplotlibexample" />
       </list>
     </recent_temporary>
@@ -302,22 +299,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/EsposallesCompetition.py">
+    <entry file="file://$PROJECT_DIR$/sssprSequential.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="434">
-          <caret line="67" column="0" lean-forward="true" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+        <state relative-caret-position="182">
+          <caret line="86" column="39" lean-forward="false" selection-start-line="86" selection-start-column="39" selection-end-line="86" selection-end-column="39" />
           <folding>
-            <element signature="e#87#105#0" expanded="true" />
+            <element signature="e#0#60#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sssprSequential.py">
+    <entry file="file://$PROJECT_DIR$/datasets/EsposallesCompetition.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-18">
-          <caret line="86" column="39" lean-forward="false" selection-start-line="86" selection-start-column="39" selection-end-line="86" selection-end-column="39" />
+        <state relative-caret-position="434">
+          <caret line="67" column="55" lean-forward="false" selection-start-line="67" selection-start-column="55" selection-end-line="67" selection-end-column="55" />
           <folding>
-            <element signature="e#0#60#0" expanded="true" />
+            <element signature="e#87#105#0" expanded="true" />
           </folding>
         </state>
       </provider>
