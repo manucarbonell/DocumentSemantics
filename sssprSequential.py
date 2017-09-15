@@ -40,9 +40,8 @@ def buildModel():
     x=SpatialPyramidPooling([1, 2, 4])(x)
     x=Dense(2048,activation='relu')(x)
     x=Dropout(0.5)(x)
-    x=Dense(512,activation='relu')(x)
-    x=Dropout(0.5)(x)
-    out1=Dense(6,activation='softmax')(x)
+    out1=Dense(512,activation='relu')(x)
+
     sspr_model = Model(inputs=[inputimage], outputs=[out1])
 
     x2=TimeDistributed(sspr_model)(inputimages)
@@ -66,6 +65,8 @@ def smoothlabel(x,amount=0.25,variance=5):
 
 def trainModel(m):
     print "Train model..."
+    print "Training parameters:"
+    os.system("cat config.py")
     E=EsposallesDataset(cvset='train')
     Ev=EsposallesDataset(cvset='validation')
 
@@ -83,13 +84,9 @@ def trainModel(m):
         for j in range(E.epoch_size/config.batch_size):
 
             x,y,example_id=E.get_batch()
-            #E.show_batch()
-
-            #y=smoothlabel(y)
-
             l,a=m.train_on_batch([x],y)#,class_weight=E.class_weights)
 
-           
+
             accs.append(a)
             losses.append(l)
 
@@ -97,9 +94,7 @@ def trainModel(m):
         accs=[]
 
         for jv in range(E.epoch_size/config.batch_size):
-
             x,y,example_id=Ev.get_batch()
-            print "\r Evaluating on validation set...",1+jv*100/(E.epoch_size/config.batch_size),"%",
             #y=smoothlabel(y)
             l,a=m.evaluate([x],y,verbose=0)
             accs.append(a)

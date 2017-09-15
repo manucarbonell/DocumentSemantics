@@ -58,7 +58,8 @@ class EsposallesDataset():
         #Create background to paste image into
         background=np.zeros(maxsize)
         im=np.array(im)
-        average_bckg_color=int(np.mean(im[np.where(im<100)]))
+        #average_bckg_color=int(np.mean(im[np.where(im<100)]))
+        average_bckg_color = int(np.mean(im))
         background.fill(average_bckg_color)
         background=Image.fromarray(background)
 
@@ -69,7 +70,7 @@ class EsposallesDataset():
         im=Image.fromarray(im)
         background.paste(im,box=(maxsize[1]/2-im.size[0]/2,maxsize[0]/2-im.size[1]/2))
         im=np.array(background)
-
+        ⁠⁠⁠im = 1. - np.array(im) / 255
         return im
 
 
@@ -139,7 +140,10 @@ class EsposallesDataset():
             print im.shape
 
             im=im.astype('uint8')
+            im=Image.fromarray(im)
+            im.show()
             imgplot = plt.imshow(im)
+
 
             print names[i],labs[0,i,:]
             plt.show()
