@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b6c4a03-04ae-400d-a46d-d81793b196a9" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/datasets/EsposallesCompetition.py" afterPath="$PROJECT_DIR$/datasets/EsposallesCompetition.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sssprSequential.py" afterPath="$PROJECT_DIR$/sssprSequential.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,8 +16,8 @@
       <file leaf-file-name="sssprSequential.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sssprSequential.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="182">
-              <caret line="86" column="39" lean-forward="false" selection-start-line="86" selection-start-column="39" selection-end-line="86" selection-end-column="39" />
+            <state relative-caret-position="889">
+              <caret line="139" column="0" lean-forward="true" selection-start-line="139" selection-start-column="0" selection-end-line="139" selection-end-column="0" />
               <folding>
                 <element signature="e#0#60#0" expanded="true" />
               </folding>
@@ -28,8 +28,8 @@
       <file leaf-file-name="EsposallesCompetition.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/datasets/EsposallesCompetition.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="434">
-              <caret line="67" column="55" lean-forward="false" selection-start-line="67" selection-start-column="55" selection-end-line="67" selection-end-column="55" />
+            <state relative-caret-position="416">
+              <caret line="143" column="0" lean-forward="true" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
               <folding>
                 <element signature="e#87#105#0" expanded="true" />
               </folding>
@@ -41,12 +41,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>shape</find>
-      <find>backgr</find>
-      <find>back</find>
-      <find>get_</find>
-      <find>get</find>
-      <find>batch_s</find>
       <find>batch_shape</find>
       <find>loss</find>
       <find>verbose_</find>
@@ -71,6 +65,12 @@
       <find>evaluating</find>
       <find>validation</find>
       <find>non</find>
+      <find>rev</find>
+      <find>epoch_si</find>
+      <find>to_cate</find>
+      <find>sspr</find>
+      <find>config.</find>
+      <find>experime</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -81,8 +81,8 @@
       <list>
         <option value="$PROJECT_DIR$/datasets/matplotlibexample.py" />
         <option value="$PROJECT_DIR$/config.py" />
-        <option value="$PROJECT_DIR$/sssprSequential.py" />
         <option value="$PROJECT_DIR$/datasets/EsposallesCompetition.py" />
+        <option value="$PROJECT_DIR$/sssprSequential.py" />
       </list>
     </option>
   </component>
@@ -301,8 +301,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sssprSequential.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="86" column="39" lean-forward="false" selection-start-line="86" selection-start-column="39" selection-end-line="86" selection-end-column="39" />
+        <state relative-caret-position="889">
+          <caret line="139" column="0" lean-forward="true" selection-start-line="139" selection-start-column="0" selection-end-line="139" selection-end-column="0" />
           <folding>
             <element signature="e#0#60#0" expanded="true" />
           </folding>
@@ -311,8 +311,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/datasets/EsposallesCompetition.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="434">
-          <caret line="67" column="55" lean-forward="false" selection-start-line="67" selection-start-column="55" selection-end-line="67" selection-end-column="55" />
+        <state relative-caret-position="416">
+          <caret line="143" column="0" lean-forward="true" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
           <folding>
             <element signature="e#87#105#0" expanded="true" />
           </folding>

@@ -17,8 +17,8 @@ import keras.backend as K
 import os
 import numpy as np
 import config
-
-experiment_id=os.path.splitext(__file__)[-1]
+import time
+experiment_id=os.path.splitext(__file__)[-1]+time.strftime("%Y%m%d_%H%M")
 max_non_improving_epochs=config.max_non_improving_epochs
 min_epochs=config.min_epochs
 verbose_period=config.verbose_period
@@ -41,7 +41,6 @@ def buildModel():
     x=Dense(2048,activation='relu')(x)
     x=Dropout(0.5)(x)
     out1=Dense(512,activation='relu')(x)
-
     sspr_model = Model(inputs=[inputimage], outputs=[out1])
 
     x2=TimeDistributed(sspr_model)(inputimages)
@@ -85,8 +84,6 @@ def trainModel(m):
 
             x,y,example_id=E.get_batch()
             l,a=m.train_on_batch([x],y)#,class_weight=E.class_weights)
-
-
             accs.append(a)
             losses.append(l)
 
@@ -119,26 +116,14 @@ def evaluateModel(m,show_confmat=False):
     revdict={v:k for (k,v) in E.labeldict.iteritems()}
     accs=[]
     losses=[]
-    confmat=np.zeros((6,6),dtype='int32')
 
-    print E.numberSamples
-    for j in xrange (E.numberSamples):
+    for j in xrange (E.epoch_size/config.batch_size):
         x,y,example_id=E.get_batch();
 
-        #predict current label
-        predicted_label=m.predict_on_batch([x])
-        y_pred=np.argmax(predicted_label[0])
-        print "%s,%s"% (example_id,revdict[y_pred])#,revdict[y[0]]
-        confmat[np.argmax(predicted_label),y[0]]+=1
-        confmat[y_pred,y[0]]+=1
         l,a=m.evaluate([x],y,verbose=0)
         accs.append(a)
         losses.append(l)
-
-    print 'accuracy,loss:',np.mean(accs),np.mean(losses)
-    if show_confmat:
-       print 'confmat:'
-       print confmat
+    print np.mean(accs)
 
 def main():
     m=buildModel()
@@ -147,9 +132,8 @@ def main():
     print "Training finished."
 
     print "Testing model..."
-    evaluateModel(m,true_previous_label=True)
-    #
-    # evaluateModel(m)
+    evaluateModel(m)
+
 
 if __name__=="__main__":
     main()
