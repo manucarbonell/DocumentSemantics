@@ -1,5 +1,5 @@
 from datasets.EsposallesCompetition import EsposallesDataset
-#from layers.SpatialPyramidPooling import SPP
+
 from kerasSPP.SpatialPyramidPooling import SpatialPyramidPooling
 from keras.optimizers import SGD
 from keras.layers.convolutional import Conv2D,MaxPooling2D
@@ -9,10 +9,9 @@ from keras.layers import Input
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.wrappers import Bidirectional
 from keras.layers.recurrent import LSTM
-
-from keras.layers.merge import Concatenate
 from keras.models import Model
-import keras.backend as K
+from keras.callbacks import TensorBoard
+import matplotlib.pyplot as plt
 
 import os
 import numpy as np
@@ -75,7 +74,7 @@ def trainModel(m):
     non_improving_epochs=0
     bestValidationACC=0
 
-    for epoch in range(100):
+    for epoch in range(config.max_epochs):
         print 'Epoch: ',epoch,'================='
         accs=[]
         losses=[]
@@ -85,6 +84,7 @@ def trainModel(m):
             x,y,example_id=E.get_batch()
             y = smoothlabel(y)
             l,a=m.train_on_batch([x],y)
+
             accs.append(a)
             losses.append(l)
 
@@ -120,11 +120,30 @@ def evaluateModel(m,show_confmat=False):
 
     for j in xrange (E.epoch_size/config.batch_size):
         x,y,example_id=E.get_batch();
-
         l,a=m.evaluate([x],y,verbose=0)
         accs.append(a)
         losses.append(l)
-    print np.mean(accs)
+    print "TEST ACCURACY:",np.mean(accs)
+
+def visualize_training(history):
+    # list all data in history
+    print(history.history.keys())
+    # summarize history for accuracy
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+    # summarize history for loss
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
 
 def main():
     m=buildModel()

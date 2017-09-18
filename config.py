@@ -9,3 +9,4 @@ n_classes=6
 max_seq_len=35
 learning_rate=0.01
 lr_decay=0.0001
+max_epochs=400

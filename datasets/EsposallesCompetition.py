@@ -11,7 +11,6 @@ def natural_key(string_):
     return [int(s) if s.isdigit() else s for s in re.split(r'(\d+)', string_)]
 import sys
 import os
-from keras import backend as K
 from PIL import Image
 import matplotlib.pyplot as plt
 from keras.utils import np_utils
@@ -140,7 +139,7 @@ class EsposallesDataset():
             im=im.astype('uint8')
             im=Image.fromarray(im)
             im.show()
-            imgplot = plt.imshow(im)
+            plt.imshow(im)
 
 
             print names[i],labs[0,i,:]

@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b6c4a03-04ae-400d-a46d-d81793b196a9" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.py" afterPath="$PROJECT_DIR$/config.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/datasets/EsposallesCompetition.py" afterPath="$PROJECT_DIR$/datasets/EsposallesCompetition.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sssprSequential.py" afterPath="$PROJECT_DIR$/sssprSequential.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -13,11 +16,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="sssprSequential.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="sssprSequential.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sssprSequential.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1152">
-              <caret line="20" column="25" lean-forward="false" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
+            <state relative-caret-position="84">
+              <caret line="76" column="40" lean-forward="false" selection-start-line="76" selection-start-column="40" selection-end-line="76" selection-end-column="40" />
               <folding>
                 <element signature="e#0#60#0" expanded="true" />
               </folding>
@@ -25,11 +28,21 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="config.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/config.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="11" column="14" lean-forward="false" selection-start-line="11" selection-start-column="14" selection-end-line="11" selection-end-column="14" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="EsposallesCompetition.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/datasets/EsposallesCompetition.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="574">
-              <caret line="149" column="11" lean-forward="false" selection-start-line="149" selection-start-column="10" selection-end-line="149" selection-end-column="11" />
+            <state relative-caret-position="281">
+              <caret line="40" column="22" lean-forward="false" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
               <folding>
                 <element signature="e#87#105#0" expanded="true" />
               </folding>
@@ -41,11 +54,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>y</find>
-      <find>utils</find>
-      <find>_utils</find>
-      <find>get_b</find>
-      <find>batch</find>
       <find>optimizer</find>
       <find>ea</find>
       <find>number</find>
@@ -71,6 +79,11 @@
       <find>best</find>
       <find>experime</find>
       <find>save_we</find>
+      <find>acc</find>
+      <find>tensorf</find>
+      <find>callback</find>
+      <find>compile</find>
+      <find>loss</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -80,9 +93,9 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/datasets/matplotlibexample.py" />
-        <option value="$PROJECT_DIR$/config.py" />
         <option value="$PROJECT_DIR$/datasets/EsposallesCompetition.py" />
         <option value="$PROJECT_DIR$/sssprSequential.py" />
+        <option value="$PROJECT_DIR$/config.py" />
       </list>
     </option>
   </component>
@@ -291,18 +304,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/datasets/matplotlibexample.py" />
     <entry file="file://$PROJECT_DIR$/datasets/test.png" />
-    <entry file="file://$PROJECT_DIR$/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="12" lean-forward="false" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/datasets/EsposallesCompetition.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="574">
-          <caret line="149" column="11" lean-forward="false" selection-start-line="149" selection-start-column="10" selection-end-line="149" selection-end-column="11" />
+        <state relative-caret-position="281">
+          <caret line="40" column="22" lean-forward="false" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
           <folding>
             <element signature="e#87#105#0" expanded="true" />
           </folding>
@@ -311,11 +316,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sssprSequential.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1152">
-          <caret line="20" column="25" lean-forward="false" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
+        <state relative-caret-position="84">
+          <caret line="76" column="40" lean-forward="false" selection-start-line="76" selection-start-column="40" selection-end-line="76" selection-end-column="40" />
           <folding>
             <element signature="e#0#60#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="14" lean-forward="false" selection-start-line="11" selection-start-column="14" selection-end-line="11" selection-end-column="14" />
+          <folding />
         </state>
       </provider>
     </entry>
