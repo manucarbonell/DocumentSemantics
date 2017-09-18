@@ -18,7 +18,7 @@ import os
 import numpy as np
 import config
 import time
-experiment_id=os.path.splitext(__file__)[-1]+time.strftime("%Y%m%d_%H%M")
+experiment_id='ssprmodel_'+time.strftime("%Y%m%d_%H%M")
 max_non_improving_epochs=config.max_non_improving_epochs
 min_epochs=config.min_epochs
 verbose_period=config.verbose_period
@@ -83,7 +83,8 @@ def trainModel(m):
         for j in range(E.epoch_size/config.batch_size):
 
             x,y,example_id=E.get_batch()
-            l,a=m.train_on_batch([x],y)#,class_weight=E.class_weights)
+            y = smoothlabel(y)
+            l,a=m.train_on_batch([x],y)
             accs.append(a)
             losses.append(l)
 
@@ -92,14 +93,14 @@ def trainModel(m):
 
         for jv in range(E.epoch_size/config.batch_size):
             x,y,example_id=Ev.get_batch()
-            #y=smoothlabel(y)
+            y=smoothlabel(y)
             l,a=m.evaluate([x],y,verbose=0)
             accs.append(a)
             losses.append(l)
         print 'avg validation loss:',np.mean(losses),'avg validation accuracy:',np.mean(accs)
         ValidationACC=np.mean(accs)
         if ValidationACC>bestValidationACC:
-            print 'new best validation accuracy', ValidationACC,'epoch:',epoch
+            print 'New best validation accuracy', ValidationACC,'epoch:',epoch
             bestValidationACC=ValidationACC
             non_improving_epochs=0
             m.save_weights('./saved_weights/'+experiment_id+'_esposalles.h5',overwrite=True)
