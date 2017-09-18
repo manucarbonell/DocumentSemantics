@@ -4,7 +4,6 @@ from kerasSPP.SpatialPyramidPooling import SpatialPyramidPooling
 from keras.optimizers import SGD
 from keras.layers.convolutional import Conv2D,MaxPooling2D
 from keras.layers.core import Dense,Activation,Dropout
-from keras.utils import np_utils
 from keras.layers import Input
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.wrappers import Bidirectional
@@ -13,7 +12,9 @@ from keras.models import Model
 from keras.callbacks import TensorBoard
 import matplotlib.pyplot as plt
 
+import glob
 import os
+import sys
 import numpy as np
 import config
 import time
@@ -113,8 +114,12 @@ def trainModel(m):
 
 def evaluateModel(m,show_confmat=False):
     E=EsposallesDataset(cvset='test')
-    m.load_weights('./saved_weights/'+experiment_id+'_esposalles.h5')
-    revdict={v:k for (k,v) in E.labeldict.iteritems()}
+
+    list_of_models = glob.glob('./saved_weights/*.h5')
+    latest_model = max(list_of_models, key=os.path.getctime)
+
+    m.load_weights(latest_model)
+
     accs=[]
     losses=[]
 
@@ -146,14 +151,21 @@ def visualize_training(history):
     plt.show()
 
 def main():
-    m=buildModel()
 
-    trainModel(m)
-    print "Training finished."
-
-    print "Testing model..."
-    evaluateModel(m)
-
+    if len(sys.argv)>1:
+        mode=sys.argv[1]
+    else:
+        mode=None
+    if mode=='train':
+        m = buildModel()
+        trainModel(m)
+        print "Training finished."
+    elif mode=='eval':
+        m = buildModel()
+        print "Testing model..."
+        evaluateModel(m)
+    else:
+        print "Usage: python",sys.argv[0],'mode=[train,eval]'
 
 if __name__=="__main__":
     main()
