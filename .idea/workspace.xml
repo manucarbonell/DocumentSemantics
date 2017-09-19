@@ -16,8 +16,8 @@
       <file leaf-file-name="sssprSequential.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sssprSequential.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="286">
-              <caret line="133" column="38" lean-forward="false" selection-start-line="133" selection-start-column="38" selection-end-line="133" selection-end-column="38" />
+            <state relative-caret-position="407">
+              <caret line="148" column="39" lean-forward="false" selection-start-line="148" selection-start-column="39" selection-end-line="148" selection-end-column="39" />
               <folding>
                 <element signature="e#0#60#0" expanded="true" />
               </folding>
@@ -51,7 +51,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>optimizer</find>
       <find>ea</find>
       <find>number</find>
       <find>labels.k</find>
@@ -81,6 +80,7 @@
       <find>callback</find>
       <find>compile</find>
       <find>loss</find>
+      <find>load</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -349,8 +349,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sssprSequential.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="133" column="38" lean-forward="false" selection-start-line="133" selection-start-column="38" selection-end-line="133" selection-end-column="38" />
+        <state relative-caret-position="407">
+          <caret line="148" column="39" lean-forward="false" selection-start-line="148" selection-start-column="39" selection-end-line="148" selection-end-column="39" />
           <folding>
             <element signature="e#0#60#0" expanded="true" />
           </folding>

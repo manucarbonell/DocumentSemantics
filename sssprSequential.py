@@ -9,7 +9,6 @@ from keras.layers.wrappers import TimeDistributed
 from keras.layers.wrappers import Bidirectional
 from keras.layers.recurrent import LSTM
 from keras.models import Model
-from keras.callbacks import TensorBoard
 import matplotlib.pyplot as plt
 
 import glob
@@ -112,46 +111,45 @@ def trainModel(m):
                 break
     print 'done'
 
-def evaluateModel(m,show_confmat=False):
-    E=EsposallesDataset(cvset='test')
-
+def load_latest_model(m):
     list_of_models = glob.glob('./saved_weights/*.h5')
-    if len(list_of_models)>0:
+    if len(list_of_models) > 0:
         latest_model = max(list_of_models, key=os.path.getctime)
 
         m.load_weights(latest_model)
-
-        accs=[]
-        losses=[]
-
-        for j in xrange (E.epoch_size/config.batch_size):
-            x,y,example_id=E.get_batch();
-            l,a=m.evaluate([x],y,verbose=0)
-            accs.append(a)
-            losses.append(l)
-        print "TEST ACCURACY:",np.mean(accs)
     else:
-        print "NO MODEL TO EVALUATE. Use",sys.argv[0],'train'
+        print "NO MODEL TO EVALUATE. Use", sys.argv[0], 'train'
+        sys.exit()
 
-def visualize_training(history):
-    # list all data in history
-    print(history.history.keys())
-    # summarize history for accuracy
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
-    plt.title('model accuracy')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
-    plt.show()
-    # summarize history for loss
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
-    plt.title('model loss')
-    plt.ylabel('loss')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
-    plt.show()
+    return m
+
+
+def evaluateModel(m):
+    E=EsposallesDataset(cvset='test')
+    accs=[]
+    losses=[]
+    m=load_latest_model(m)
+    for j in xrange (E.epoch_size/config.batch_size):
+        x,y,example_id=E.get_batch();
+        l,a=m.evaluate([x],y,verbose=0)
+        accs.append(a)
+        losses.append(l)
+    print "TEST ACCURACY:",np.mean(accs)
+
+
+def generateTestCSV(m,outFilename='output.csv'):
+    E=EsposallesDataset(cvset='test')
+    m=load_latest_model(m)
+    revdict={v:k for (k,v) in E.labeldict.iteritems()}
+    with open(outFilename,mode='w') as outfile:
+        for j in range(E.epoch_size/config.batch_size):
+            x,y,example_id=E.get_batch()
+            predicted_seq_labels=m.predict_on_batch([x])
+            for t in range(len(predicted_seq_labels[0])):
+                #BATCH SIZE 0, FUNCTION HAS TO BE CHANGED WHEN BS IS GREATER
+                y_pred = np.argmax(predicted_seq_labels[0,t,:])
+                outfile.write("%s,%s\n"%(example_id[t],revdict[y_pred]))
+
 
 def main():
 
@@ -167,8 +165,13 @@ def main():
         m = buildModel()
         print "Testing model..."
         evaluateModel(m)
+
+    elif mode=='csvout':
+        m = buildModel()
+        generateTestCSV(m)
+
     else:
-        print "Usage: python",sys.argv[0],'mode=[train,eval]'
+        print "Usage: python",sys.argv[0],'mode=[train,eval,traineval,csvout]'
 
 if __name__=="__main__":
     main()
