@@ -116,19 +116,22 @@ def evaluateModel(m,show_confmat=False):
     E=EsposallesDataset(cvset='test')
 
     list_of_models = glob.glob('./saved_weights/*.h5')
-    latest_model = max(list_of_models, key=os.path.getctime)
+    if len(list_of_models)>0:
+        latest_model = max(list_of_models, key=os.path.getctime)
 
-    m.load_weights(latest_model)
+        m.load_weights(latest_model)
 
-    accs=[]
-    losses=[]
+        accs=[]
+        losses=[]
 
-    for j in xrange (E.epoch_size/config.batch_size):
-        x,y,example_id=E.get_batch();
-        l,a=m.evaluate([x],y,verbose=0)
-        accs.append(a)
-        losses.append(l)
-    print "TEST ACCURACY:",np.mean(accs)
+        for j in xrange (E.epoch_size/config.batch_size):
+            x,y,example_id=E.get_batch();
+            l,a=m.evaluate([x],y,verbose=0)
+            accs.append(a)
+            losses.append(l)
+        print "TEST ACCURACY:",np.mean(accs)
+    else:
+        print "NO MODEL TO EVALUATE. Use",sys.argv[0],'train'
 
 def visualize_training(history):
     # list all data in history
