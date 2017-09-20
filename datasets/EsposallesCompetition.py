@@ -23,7 +23,7 @@ im_height=config.im_height
 im_width=config.im_width
 
 class EsposallesDataset():
-    def __init__(self,BaseDir='/home/ntoledo/datasets/OfficialEsposalles',cvset='train',level='word'):
+    def __init__(self,BaseDir='/home/jitoledo/datasets/OfficialEsposalles',cvset='train',level='word'):
         self.BaseDir=BaseDir
         self.DataDir=BaseDir+'/'+cvset
         self.GroundTruth=self.DataDir+'/groundtruth_full.txt'
@@ -122,12 +122,14 @@ class EsposallesDataset():
         return X,category,person,[IDS]
 
 
-    def get_labels_from_categorical(self,ids,categories,persons):
+    def get_labels_from_categorical(self,ids,categories,persons=None):
+        if persons is None:
+            return [ zip(r_ids,[ self.revcategorydict[np.argmax(sample)] for sample in r_categories]) for r_ids,r_categories in zip (ids,categories)]
         return [ zip(r_ids,[ self.revcategorydict[np.argmax(sample)] for sample in r_categories],[ self.revpersondict[np.argmax(sample)] for sample in r_persons]) for r_ids,r_categories,r_persons in zip (ids,categories,persons)]
 
     def show_batch(self):
 
-        ims,labs,names=self.get_batch()
+        ims,cats,pers,names=self.get_batch()
         widths=[]
         heights=[]
 
@@ -142,7 +144,7 @@ class EsposallesDataset():
             plt.imshow(im)
 
 
-            print names[i],labs[0,i,:]
+            print names[i],cats[0,i,:],pers[0,i,:]
             plt.show()
 
 def main():

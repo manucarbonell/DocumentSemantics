@@ -81,9 +81,9 @@ def trainModel(m):
 
         for j in range(E.epoch_size/config.batch_size):
 
-            x,y,example_id=E.get_batch()
-            y = smoothlabel(y)
-            l,a=m.train_on_batch([x],y)
+            word_images,categories,persons,ids=E.get_batch()
+            categories = smoothlabel(categories)
+            l,a=m.train_on_batch([x],categories)
 
             accs.append(a)
             losses.append(l)
@@ -92,9 +92,9 @@ def trainModel(m):
         accs=[]
 
         for jv in range(E.epoch_size/config.batch_size):
-            x,y,example_id=Ev.get_batch()
-            y=smoothlabel(y)
-            l,a=m.evaluate([x],y,verbose=0)
+            x,categories,persons,ids=Ev.get_batch()
+            categories=smoothlabel(categories)
+            l,a=m.evaluate([x],categories,verbose=0)
             accs.append(a)
             losses.append(l)
         print 'avg validation loss:',np.mean(losses),'avg validation accuracy:',np.mean(accs)
@@ -130,8 +130,8 @@ def evaluateModel(m):
     losses=[]
     m=load_latest_model(m)
     for j in xrange (E.epoch_size/config.batch_size):
-        x,y,example_id=E.get_batch();
-        l,a=m.evaluate([x],y,verbose=0)
+        x,categories,persons,ids=E.get_batch();
+        l,a=m.evaluate([x],categories,verbose=0)
         accs.append(a)
         losses.append(l)
     print "TEST ACCURACY:",np.mean(accs)
@@ -140,15 +140,14 @@ def evaluateModel(m):
 def generateTestCSV(m,outFilename='output.csv'):
     E=EsposallesDataset(cvset='test')
     m=load_latest_model(m)
-    revdict={v:k for (k,v) in E.labeldict.iteritems()}
     with open(outFilename,mode='w') as outfile:
         for j in range(E.epoch_size/config.batch_size):
-            x,y,example_id=E.get_batch()
-            predicted_seq_labels=m.predict_on_batch([x])
-            for t in range(len(predicted_seq_labels[0])):
-                #BATCH SIZE 0, FUNCTION HAS TO BE CHANGED WHEN BS IS GREATER
-                y_pred = np.argmax(predicted_seq_labels[0,t,:])
-                outfile.write("%s,%s\n"%(example_id[t],revdict[y_pred]))
+            x,categories,persons,ids=E.get_batch()
+            categories_pred=m.predict_on_batch([x])
+            out=E.get_labels_from_categorical(ids,categories_pred)
+            for record  in out:
+                for word_id,category in record:
+                    outfile.write("%s,%s\n"%(word_id,category))
 
 
 def main():
