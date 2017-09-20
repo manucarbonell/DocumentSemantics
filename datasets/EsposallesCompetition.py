@@ -26,23 +26,28 @@ class EsposallesDataset():
     def __init__(self,BaseDir='/home/ntoledo/datasets/OfficialEsposalles',cvset='train',level='word'):
         self.BaseDir=BaseDir
         self.DataDir=BaseDir+'/'+cvset
-        self.GroundTruth=self.DataDir+'/category_groundtruth.txt'
+        self.GroundTruth=self.DataDir+'/groundtruth_full.txt'
         self.level=level
-        self.labels={}
+        self.transcriptions={}
+        self.categories={}
+        self.persons={}
         with open(self.GroundTruth, mode='r') as infile:
             for line in infile:
-                values=line.rstrip('\n').split(':',2)
-                self.labels[values[0]]=values[1]
-        self.labeldict={l:n for (n,l) in enumerate(['other','surname','name','location','occupation','state'])}
-        self.generate_previous_labels_and_regdict()
+                values=line.rstrip('\n').split(':',4)
+                self.transcriptions[values[0]]=values[1]
+                self.categories[values[0]]=values[2]
+                self.persons[values[0]]=values[3]
+        self.categorydict={l:n for (n,l) in enumerate(['other','surname','name','location','occupation','state'])}
+        self.revcategorydict={v:k for (k,v) in self.categorydict.iteritems()}
+        self.persondict={l:n for (n,l) in enumerate(['none','other_person','husband','wife','husbands_father','husbands_mother','wifes_mother','wifes_father'])}
+        self.revpersondict={v:k for (k,v) in self.persondict.iteritems()}
+        self.generate_previous_categories_and_regdict()
         self.shuffled_registers=[k for k in self.reg_dict.iterkeys()]
         self.register_iterator=iter(self.shuffled_registers)
         self.epoch_size = len(self.shuffled_registers)
         self.r_id=self.register_iterator.next()
-        self.word_iterator=iter(self.reg_dict[self.r_id])
-        self.w_id=-1
         self.epoch=0
-        self.numberSamples=len(self.labels.keys())
+        self.numberSamples=len(self.categories.keys()) 
 
     def readNormalizedImage(self,imageid):
         # Read image from file
@@ -56,14 +61,12 @@ class EsposallesDataset():
 
         #Create background to paste image into
         background=np.zeros(maxsize)
-        im=np.array(im)
         #average_bckg_color=int(np.mean(im[np.where(im<100)]))
-        average_bckg_color = int(np.mean(im))
+        average_bckg_color = int(np.mean(np.array(im)))
         background.fill(average_bckg_color)
         background=Image.fromarray(background)
 
         #Paste image centered into grey background
-        im=Image.fromarray(im)
         background.paste(im,box=(maxsize[1]/2-im.size[0]/2,maxsize[0]/2-im.size[1]/2))
         im=np.array(background)
         im= 1.-np.array(im)/255.
@@ -71,12 +74,12 @@ class EsposallesDataset():
         return im
 
 
-    def generate_previous_labels_and_regdict(self):
-        l=self.labels.keys()
+    def generate_previous_categories_and_regdict(self):
+        l=self.categories.keys()
         l=sorted(l,key=natural_key)
-        prevlabel=6
+        prevcategory=6
         prevpag,prevreg,pag,reg=(0,0,0,0)
-        self.prevlabels={}
+        self.prevcategories={}
         self.reg_dict={}
         for s in l:
             m=re.search('^idPage([0-9]{5})_Record([0-9]{1,2})_Line([0-9]{1,2})_Word([0-9]{1,2})$',s);
@@ -86,24 +89,20 @@ class EsposallesDataset():
             else:
                self.reg_dict[pag,reg]=[s]
             if prevpag==0 or prevpag==pag and prevreg == reg:
-               self.prevlabels[s]=prevlabel
-               prevlabel=self.labeldict[self.labels[s]]
+               self.prevcategories[s]=prevcategory
+               prevcategories=self.categorydict[self.categories[s]]
             else:
-               prevlabel=6
-               self.prevlabels[s]=prevlabel
+               prevcategory=6
+               self.prevcategories[s]=prevcategory
             prevpag=pag
             prevreg=reg
 
     def get_batch(self,show_word_ids=False):
 
-        self.word_iterator=iter(self.reg_dict[self.r_id])
-        IDS=[i for i in self.word_iterator]
-
-        self.word_iterator = iter(self.reg_dict[self.r_id])
-        X=[np.asarray(self.readNormalizedImage(i))[:,:,np.newaxis] for i in self.word_iterator]
-
-        self.word_iterator=iter(self.reg_dict[self.r_id])
-        Y=[np.asarray(self.labeldict[self.labels[i]]) for i in self.word_iterator]
+        IDS=[i for i in self.reg_dict[self.r_id]]
+        X=[np.asarray(self.readNormalizedImage(i))[:,:,np.newaxis] for i in IDS ]
+        category=[np.asarray(self.categorydict[self.categories[i]]) for i in IDS ]
+        person=[np.asarray(self.persondict[self.persons[i]]) for i in IDS ]
 
         try:
             self.r_id=self.register_iterator.next()
@@ -113,17 +112,18 @@ class EsposallesDataset():
             self.r_id=self.register_iterator.next()
             self.epoch+=1
 
-        X = np.stack(X)
+        X=np.stack(X)
         X=X[np.newaxis,:,:,:,:]
-        Y = np_utils.to_categorical(Y, config.n_classes)
-        Y=Y[np.newaxis,:,:]
+        category=np_utils.to_categorical(category, len(self.categorydict.keys()))
+        category=category[np.newaxis,:,:]
+        person=np_utils.to_categorical(person, len(self.persondict.keys()))
+        person=person[np.newaxis,:,:]
 
-        return X,Y,IDS
+        return X,category,person,[IDS]
 
 
-    def get_transcription_from_categorical(self,predictions):
-        if self.revdict is None: self.revdict={v:k for (k,v) in self.labeldict.iteritems()}
-        return [','.join([self.revdict[timestep] for timestep in sample]).rstrip(',0') for sample in predictions]
+    def get_labels_from_categorical(self,ids,categories,persons):
+        return [ zip(r_ids,[ self.revcategorydict[np.argmax(sample)] for sample in r_categories],[ self.revpersondict[np.argmax(sample)] for sample in r_persons]) for r_ids,r_categories,r_persons in zip (ids,categories,persons)]
 
     def show_batch(self):
 
