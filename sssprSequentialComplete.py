@@ -66,6 +66,7 @@ def trainModel(m):
     print "Train model..."
     print "Training parameters:"
     os.system("cat config.py")
+    print "\n"
     E=EsposallesDataset(cvset='train')
     Ev=EsposallesDataset(cvset='validation')
 
@@ -77,31 +78,49 @@ def trainModel(m):
 
     for epoch in range(config.max_epochs):
         print 'Epoch: ',epoch,'================='
-        accs=[]
-        losses=[]
+        categ_accs=[]
+        pers_accs = []
+        categ_losses=[]
+        pers_losses=[]
+
+        ####### TRAINING EPOCH #########
 
         for j in range(E.epoch_size/config.batch_size):
 
             word_images,categories,persons,ids=E.get_batch()
             categories = smoothlabel(categories)
             persons=smoothlabel(persons)
-            y=np.concatenate((persons,categories),axis=2)
-            l,a=m.train_on_batch(word_images,y)
 
-            accs.append(a)
-            losses.append(l)
+            total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.train_on_batch(word_images,y=[categories, persons])
+            categ_accs.append(categ_acc)
+            categ_losses.append(categ_loss)
+            pers_accs.append(pers_acc)
+            pers_losses.append(pers_loss)
 
-        print 'avg training loss:  ',np.mean(losses),'avg training accuracy:  ',np.mean(accs)
-        accs=[]
+        print 'avg training loss:  ',np.mean(total_loss),'avg training category accuracy:  ',np.mean(categ_accs),\
+            '\navg training person accuracy:  ', np.mean(pers_accs)
 
-        for jv in range(E.epoch_size/config.batch_size):
-            word_images,categories,persons,ids=Ev.get_batch()
-            categories=smoothlabel(categories)
-            l,a=m.evaluate([word_images],categories,verbose=0)
-            accs.append(a)
-            losses.append(l)
-        print 'avg validation loss:',np.mean(losses),'avg validation accuracy:',np.mean(accs)
-        ValidationACC=np.mean(accs)
+        categ_accs = []
+        pers_accs = []
+        categ_losses = []
+        pers_losses = []
+
+        ###### VALIDATION EPOCH #######
+
+        for j in range(Ev.epoch_size / config.batch_size):
+            word_images, categories, persons, ids = Ev.get_batch()
+            categories = smoothlabel(categories)
+            persons = smoothlabel(persons)
+
+            total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.evaluate(word_images,y=[categories, persons],verbose=0)
+            categ_accs.append(categ_acc)
+            categ_losses.append(categ_loss)
+            pers_accs.append(pers_acc)
+            pers_losses.append(pers_loss)
+
+        print 'avg validation loss:  ', np.mean(total_loss), 'avg validation category accuracy:  ', np.mean(categ_accs),'avg validation person accuracy:  ', np.mean(pers_accs)
+
+        '''ValidationACC=np.mean(accs)
         if ValidationACC>bestValidationACC:
             print 'New best validation accuracy', ValidationACC,'epoch:',epoch
             bestValidationACC=ValidationACC
@@ -111,7 +130,7 @@ def trainModel(m):
             non_improving_epochs+=1
             if non_improving_epochs>max_non_improving_epochs and epoch > min_epochs:
                 print max_non_improving_epochs,' epochs without improving validation accuracy. Training Finished'
-                break
+                break'''
     print 'done'
 
 def load_latest_model(m):
@@ -129,14 +148,18 @@ def load_latest_model(m):
 
 def evaluateModel(m):
     E=EsposallesDataset(cvset='test')
-    accs=[]
-    losses=[]
+    categ_accs = []
+    pers_accs = []
+    categ_losses = []
+    pers_losses = []
     m=load_latest_model(m)
     for j in xrange (E.epoch_size/config.batch_size):
         word_images,categories,persons,ids=E.get_batch();
-        l,a=m.evaluate([word_images],categories,verbose=0)
-        accs.append(a)
-        losses.append(l)
+        total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.evaluate(word_images, y=[categories, persons],verbose=0)
+        categ_accs.append(categ_acc)
+        categ_losses.append(categ_loss)
+        pers_accs.append(pers_acc)
+        pers_losses.append(pers_loss)
     print "TEST ACCURACY:",np.mean(accs)
 
 
