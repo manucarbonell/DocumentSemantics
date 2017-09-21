@@ -23,7 +23,7 @@ im_height=config.im_height
 im_width=config.im_width
 
 class EsposallesDataset():
-    def __init__(self,BaseDir='/home/jitoledo/datasets/OfficialEsposalles',cvset='train',level='word'):
+    def __init__(self,BaseDir='/home/ntoledo/datasets/OfficialEsposalles',cvset='train',level='word'):
         self.BaseDir=BaseDir
         self.DataDir=BaseDir+'/'+cvset
         self.GroundTruth=self.DataDir+'/groundtruth_full.txt'
@@ -43,11 +43,11 @@ class EsposallesDataset():
         self.revpersondict={v:k for (k,v) in self.persondict.iteritems()}
         self.generate_previous_categories_and_regdict()
         self.shuffled_registers=[k for k in self.reg_dict.iterkeys()]
+        self.shuffled_registers.sort()
         self.register_iterator=iter(self.shuffled_registers)
         self.epoch_size = len(self.shuffled_registers)
         self.r_id=self.register_iterator.next()
         self.epoch=0
-        self.numberSamples=len(self.categories.keys()) 
 
     def readNormalizedImage(self,imageid):
         # Read image from file
