@@ -71,7 +71,7 @@ def load_latest_model(m):
         print "NO MODEL TO LOAD."
     else:
         print "NO MODEL TO LOAD."
-        log_file = open(config.training_log, 'w')
+        log_file = open("./training_log/"+experiment_id+".txt", 'w')
         log_file.write("Categ train acc\tCateg valid acc\tPerson train acc\tPerson valid acc\n")
         log_file.close()
     return m
@@ -125,7 +125,7 @@ def trainModel(m):
             total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.evaluate(word_images,y=[categories, persons],verbose=0)
             valid_categ_accs.append(categ_acc)
             valid_pers_accs.append(pers_acc)
-        log_file = open(config.training_log, 'a')
+        log_file = open("./training_log/"+experiment_id+".txt", 'a')
         log_file.write(str(np.mean(train_categ_accs))+"\t"+str(np.mean(valid_categ_accs))+"\t"+str(np.mean(train_pers_accs))+"\t"+str(np.mean(valid_pers_accs))+"\n")
         log_file.close()
         
@@ -140,7 +140,7 @@ def trainModel(m):
             non_improving_epochs+=1
             if non_improving_epochs>max_non_improving_epochs and epoch > min_epochs:
                 print max_non_improving_epochs,' epochs without improving validation accuracy. Training Finished'
-                break'''
+                break
     print 'done'
 
 
