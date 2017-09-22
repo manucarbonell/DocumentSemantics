@@ -20,7 +20,7 @@ import time
 experiment_id=sys.argv[0].split('.')[0]+time.strftime("%Y%m%d_%H%M")
 max_non_improving_epochs=config.max_non_improving_epochs
 min_epochs=config.min_epochs
-verbose_period=config.verbose_period
+
 
 def buildModel():
     inputimages = Input(shape=(None,config.im_height,config.im_width, config.im_depth))
@@ -61,8 +61,26 @@ def smoothlabel(x,amount=0.25,variance=5):
     smoothed=x*(1-noise.sum())+noise
     return smoothed
 
+def load_latest_model(m):
+    list_of_models = glob.glob('./saved_weights/*.h5')
+    if len(list_of_models) > 0:
+        latest_model = max(list_of_models, key=os.path.getctime)
+        if latest_model.split("_")==sys.argv[0].split(".")[0]:
+            m.load_weights(latest_model)
+            print "MODEL RESTORED."
+        print "NO MODEL TO LOAD."
+    else:
+        print "NO MODEL TO LOAD."
+        log_file = open(config.training_log, 'w')
+        log_file.write("Categ train acc\tCateg valid acc\tPerson train acc\tPerson valid acc\n")
+        log_file.close()
+    return m
+
+
+
 
 def trainModel(m):
+    load_latest_model(m)    
     print "Train model..."
     print "Training parameters:"
     os.system("cat config.py")
@@ -76,34 +94,37 @@ def trainModel(m):
     non_improving_epochs=0
     bestValidationACC=0
 
-    for epoch in range(config.max_epochs):
+    #for epoch in range(config.max_epochs):
+    for epoch in range(10):
         print 'Epoch: ',epoch,'================='
-        categ_accs=[]
-        pers_accs = []
-        categ_losses=[]
-        pers_losses=[]
-
+        train_categ_accs=[]
+        train_pers_accs = []
+        train_categ_losses=[]
+        train_pers_losses=[]
+        
         ####### TRAINING EPOCH #########
 
         for j in range(E.epoch_size/config.batch_size):
-
+            print j,E.epoch_size/config.batch_size
             word_images,categories,persons,ids=E.get_batch()
             categories = smoothlabel(categories)
             persons=smoothlabel(persons)
 
             total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.train_on_batch(word_images,y=[categories, persons])
-            categ_accs.append(categ_acc)
-            categ_losses.append(categ_loss)
-            pers_accs.append(pers_acc)
-            pers_losses.append(pers_loss)
 
-        print 'avg training loss:  ',np.mean(total_loss),'avg training category accuracy:  ',np.mean(categ_accs),\
-            '\navg training person accuracy:  ', np.mean(pers_accs)
+            train_categ_accs.append(categ_acc)
+            train_categ_losses.append(categ_loss)
+            train_pers_accs.append(pers_acc)
+            train_pers_losses.append(pers_loss)
 
-        categ_accs = []
-        pers_accs = []
-        categ_losses = []
-        pers_losses = []
+
+        #print 'avg training loss:  ',np.mean(total_loss),'avg training category accuracy:  ',np.mean(categ_accs),\
+        #    '\navg training person accuracy:  ', np.mean(pers_accs)
+
+        valid_categ_accs = []
+        valid_pers_accs = []
+        valid_categ_losses = []
+        valid_pers_losses = []
 
         ###### VALIDATION EPOCH #######
 
@@ -113,12 +134,14 @@ def trainModel(m):
             persons = smoothlabel(persons)
 
             total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.evaluate(word_images,y=[categories, persons],verbose=0)
-            categ_accs.append(categ_acc)
-            categ_losses.append(categ_loss)
-            pers_accs.append(pers_acc)
-            pers_losses.append(pers_loss)
-
-        print 'avg validation loss:  ', np.mean(total_loss), 'avg validation category accuracy:  ', np.mean(categ_accs),'avg validation person accuracy:  ', np.mean(pers_accs)
+            valid_categ_accs.append(categ_acc)
+            valid_categ_losses.append(categ_loss)
+            valid_pers_accs.append(pers_acc)
+            valid_pers_losses.append(pers_loss)
+        log_file = open(config.training_log, 'a')
+        log_file.write(str(np.mean(train_categ_accs))+"\t"+str(np.mean(valid_categ_accs))+"\t"+str(np.mean(train_pers_accs))+"\t"+str(np.mean(valid_pers_accs))+"\n")
+        log_file.close()
+        #print 'avg validation loss:  ', np.mean(total_loss), 'avg validation category accuracy:  ', np.mean(categ_accs),'avg validation person accuracy:  ', np.mean(pers_accs)
 
         '''ValidationACC=np.mean(accs)
         if ValidationACC>bestValidationACC:
@@ -132,18 +155,6 @@ def trainModel(m):
                 print max_non_improving_epochs,' epochs without improving validation accuracy. Training Finished'
                 break'''
     print 'done'
-
-def load_latest_model(m):
-    list_of_models = glob.glob('./saved_weights/*.h5')
-    if len(list_of_models) > 0:
-        latest_model = max(list_of_models, key=os.path.getctime)
-
-        m.load_weights(latest_model)
-    else:
-        print "NO MODEL TO EVALUATE. Use", sys.argv[0], 'train'
-        sys.exit()
-
-    return m
 
 
 def evaluateModel(m):
