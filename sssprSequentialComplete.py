@@ -63,6 +63,10 @@ def smoothlabel(x,amount=0.25,variance=5):
 
 def load_latest_model(m):
     list_of_models = glob.glob('./saved_weights/*.h5')
+    
+    if not os.path.exists("./training_log"):
+        os.mkdir("./training_log")
+    
     if len(list_of_models) > 0:
         latest_model = max(list_of_models, key=os.path.getctime)
         if latest_model.split("_")==sys.argv[0].split(".")[0]:
