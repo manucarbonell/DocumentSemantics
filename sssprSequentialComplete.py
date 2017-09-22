@@ -99,13 +99,10 @@ def trainModel(m):
         print 'Epoch: ',epoch,'================='
         train_categ_accs=[]
         train_pers_accs = []
-        train_categ_losses=[]
-        train_pers_losses=[]
         
         ####### TRAINING EPOCH #########
 
         for j in range(E.epoch_size/config.batch_size):
-            print j,E.epoch_size/config.batch_size
             word_images,categories,persons,ids=E.get_batch()
             categories = smoothlabel(categories)
             persons=smoothlabel(persons)
@@ -113,18 +110,10 @@ def trainModel(m):
             total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.train_on_batch(word_images,y=[categories, persons])
 
             train_categ_accs.append(categ_acc)
-            train_categ_losses.append(categ_loss)
             train_pers_accs.append(pers_acc)
-            train_pers_losses.append(pers_loss)
-
-
-        #print 'avg training loss:  ',np.mean(total_loss),'avg training category accuracy:  ',np.mean(categ_accs),\
-        #    '\navg training person accuracy:  ', np.mean(pers_accs)
 
         valid_categ_accs = []
         valid_pers_accs = []
-        valid_categ_losses = []
-        valid_pers_losses = []
 
         ###### VALIDATION EPOCH #######
 
@@ -135,15 +124,13 @@ def trainModel(m):
 
             total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.evaluate(word_images,y=[categories, persons],verbose=0)
             valid_categ_accs.append(categ_acc)
-            valid_categ_losses.append(categ_loss)
             valid_pers_accs.append(pers_acc)
-            valid_pers_losses.append(pers_loss)
         log_file = open(config.training_log, 'a')
         log_file.write(str(np.mean(train_categ_accs))+"\t"+str(np.mean(valid_categ_accs))+"\t"+str(np.mean(train_pers_accs))+"\t"+str(np.mean(valid_pers_accs))+"\n")
         log_file.close()
-        #print 'avg validation loss:  ', np.mean(total_loss), 'avg validation category accuracy:  ', np.mean(categ_accs),'avg validation person accuracy:  ', np.mean(pers_accs)
-
-        '''ValidationACC=np.mean(accs)
+        
+        ValidationAcc=np.mean([np.mean(valid_pers_accs),np.mean(valid_categ_accs)])
+        
         if ValidationACC>bestValidationACC:
             print 'New best validation accuracy', ValidationACC,'epoch:',epoch
             bestValidationACC=ValidationACC
