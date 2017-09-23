@@ -98,8 +98,7 @@ def trainModel(m):
     non_improving_epochs=0
     bestValidationACC=0
 
-    #for epoch in range(config.max_epochs):
-    for epoch in range(10):
+    for epoch in range(config.max_epochs):
         print 'Epoch: ',epoch,'================='
         train_categ_accs=[]
         train_pers_accs = []
@@ -133,7 +132,7 @@ def trainModel(m):
         log_file.write(str(np.mean(train_categ_accs))+"\t"+str(np.mean(valid_categ_accs))+"\t"+str(np.mean(train_pers_accs))+"\t"+str(np.mean(valid_pers_accs))+"\n")
         log_file.close()
         
-        ValidationAcc=np.mean([np.mean(valid_pers_accs),np.mean(valid_categ_accs)])
+        ValidationACC=np.mean([np.mean(valid_pers_accs),np.mean(valid_categ_accs)])
         
         if ValidationACC>bestValidationACC:
             print 'New best validation accuracy', ValidationACC,'epoch:',epoch
@@ -162,7 +161,8 @@ def evaluateModel(m):
         categ_losses.append(categ_loss)
         pers_accs.append(pers_acc)
         pers_losses.append(pers_loss)
-    print "TEST ACCURACY:",np.mean(accs)
+    print "TEST CATEGORY ACCURACY:",np.mean(categ_acc)
+    print "TEST PERSON ACCURACY:",np.mean(pers_acc)
 
 
 def generateTestCSV(m,outFilename='output.csv'):
