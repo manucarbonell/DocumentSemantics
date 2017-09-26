@@ -28,6 +28,8 @@ learning_rate=0.01
 lr_decay=0.0001
 max_epochs=400
 
+visualize=True #Training accuracies visualization
+
 experiment_id=os.path.splitext(__file__)[0]
 
 
@@ -70,6 +72,27 @@ def smoothlabel(x,amount=0.25,variance=5):
     smoothed=x*(1-noise.sum())+noise
     return smoothed
 
+def visualize_training():
+    cat_train_acc=[]
+    cat_valid_acc=[]
+    pers_train_acc=[]
+    pers_valid_acc=[]
+
+    log_file = open("./training_log/" + experiment_id + ".txt", 'r')
+    header=log_file.readline()
+    epochs=log_file.readlines()
+
+    for epoch in epochs:
+        accuracies=epoch.split("\t")
+        cat_train_acc.append(float(accuracies[0]))
+        cat_valid_acc.append(float(accuracies[1]))
+        pers_train_acc.append(float(accuracies[2]))
+        pers_valid_acc.append(float(accuracies[3]))
+    import matplotlib.pyplot as plt
+    plt.plot(cat_train_acc,color='r')
+    plt.plot(cat_valid_acc, color='g')
+    plt.ylabel('Category train accuracy')
+    plt.show()
 
 def trainModel(m):
     print "Train model..."
@@ -79,6 +102,10 @@ def trainModel(m):
 
     if not os.path.exists('saved_weights'):
         os.mkdir('saved_weights')
+
+    log_file = open("./training_log/" + experiment_id + ".txt", 'w')
+    log_file.write("Categ train acc\tCateg valid acc\tPerson train acc\tPerson valid acc\n")
+    log_file.close()
 
     non_improving_epochs=0
     bestValidationACC=0
@@ -116,7 +143,10 @@ def trainModel(m):
         log_file = open("./training_log/"+experiment_id+".txt", 'a')
         log_file.write(str(np.mean(train_categ_accs))+"\t"+str(np.mean(valid_categ_accs))+"\t"+str(np.mean(train_pers_accs))+"\t"+str(np.mean(valid_pers_accs))+"\n")
         log_file.close()
-        
+
+        if visualize:
+            visualize_training()
+
         ValidationACC=np.mean([np.mean(valid_pers_accs),np.mean(valid_categ_accs)])
         
         if ValidationACC>bestValidationACC:
@@ -129,6 +159,8 @@ def trainModel(m):
             if non_improving_epochs>max_non_improving_epochs and epoch > min_epochs:
                 print max_non_improving_epochs,' epochs without improving validation accuracy. Training Finished'
                 break
+
+
     print 'done'
 
 
