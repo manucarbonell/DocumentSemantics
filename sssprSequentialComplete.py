@@ -73,9 +73,7 @@ def smoothlabel(x,amount=0.25,variance=5):
 
 def trainModel(m):
     print "Train model..."
-    print "Training parameters:"
-    os.system("cat config.py")
-    print "\n"
+
     E=EsposallesDataset(cvset='train')
     Ev=EsposallesDataset(cvset='validation')
 
@@ -92,7 +90,7 @@ def trainModel(m):
         
         ####### TRAINING EPOCH #########
 
-        for j in range(E.epoch_size/config.batch_size):
+        for j in range(E.epoch_size/batch_size):
             word_images,categories,persons,ids=E.get_batch()
             categories = smoothlabel(categories)
             persons=smoothlabel(persons)
