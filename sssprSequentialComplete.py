@@ -15,18 +15,26 @@ import glob
 import os
 import sys
 import numpy as np
-import config
-import time
+
+batch_size=1
+max_non_improving_epochs=20
+min_epochs=2
+verbose_period=5
+im_height=80
+im_width=125
+im_depth=1
+max_seq_len=35
+learning_rate=0.01
+lr_decay=0.0001
+max_epochs=400
 
 experiment_id=os.path.splitext(__file__)[0]
-max_non_improving_epochs=config.max_non_improving_epochs
-min_epochs=config.min_epochs
 
 
 def buildModel():
-    inputimages = Input(shape=(None,config.im_height,config.im_width, config.im_depth))
+    inputimages = Input(shape=(None,im_height,im_width, im_depth))
 
-    inputimage=Input(shape=(config.im_height,config.im_width,config.im_depth))
+    inputimage=Input(shape=(im_height,im_width,im_depth))
 
     x=Conv2D(32,(3,3),padding='same',activation='relu')(inputimage)
     x=Conv2D(32,(3,3),padding='same',activation='relu')(x)
@@ -49,7 +57,7 @@ def buildModel():
 
     category_output=TimeDistributed(Dense(6,activation='softmax'))(x2)
     person_output = TimeDistributed(Dense(8, activation='softmax'))(x2)
-    optimizer=SGD(lr=config.learning_rate,momentum=0.9,nesterov=True,decay=config.lr_decay)
+    optimizer=SGD(lr=learning_rate,momentum=0.9,nesterov=True,decay=lr_decay)
     m=Model(inputs=[inputimages],outputs=[category_output,person_output])
     m.compile(loss=['categorical_crossentropy','categorical_crossentropy'],optimizer=optimizer,metrics=['acc'])
 
@@ -77,7 +85,7 @@ def trainModel(m):
     non_improving_epochs=0
     bestValidationACC=0
 
-    for epoch in range(config.max_epochs):
+    for epoch in range(max_epochs):
         print 'Epoch: ',epoch,'================='
         train_categ_accs=[]
         train_pers_accs = []
@@ -99,7 +107,7 @@ def trainModel(m):
 
         ###### VALIDATION EPOCH #######
 
-        for j in range(Ev.epoch_size / config.batch_size):
+        for j in range(Ev.epoch_size / batch_size):
             word_images, categories, persons, ids = Ev.get_batch()
             categories = smoothlabel(categories)
             persons = smoothlabel(persons)
@@ -133,7 +141,7 @@ def evaluateModel(m):
     categ_losses = []
     pers_losses = []
     m.load_weights('./saved_weights/' + experiment_id + '_esposalles.h5')
-    for j in xrange (E.epoch_size/config.batch_size):
+    for j in xrange (E.epoch_size/batch_size):
         word_images,categories,persons,ids=E.get_batch();
         total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.evaluate(word_images, y=[categories, persons],verbose=0)
         categ_accs.append(categ_acc)
@@ -145,10 +153,12 @@ def evaluateModel(m):
 
 
 def generateTestCSV(m,outFilename='output.csv'):
+
     E=EsposallesDataset(cvset='test')
-    m=load_latest_model(m)
+    m.load_weights('./saved_weights/' + experiment_id + '_esposalles.h5')
+
     with open(outFilename,mode='w') as outfile:
-        for j in range(E.epoch_size/config.batch_size):
+        for j in range(E.epoch_size/batch_size):
             word_images,categories,persons,ids=E.get_batch()
             categories_pred=m.predict_on_batch([word_images])
             out=E.get_labels_from_categorical(ids,categories_pred)
