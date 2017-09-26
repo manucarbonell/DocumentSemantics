@@ -17,7 +17,8 @@ import sys
 import numpy as np
 import config
 import time
-experiment_id=sys.argv[0].split('.')[0]+time.strftime("%Y%m%d_%H%M")
+
+experiment_id=os.path.splitext(__file__)[0]
 max_non_improving_epochs=config.max_non_improving_epochs
 min_epochs=config.min_epochs
 
@@ -61,30 +62,8 @@ def smoothlabel(x,amount=0.25,variance=5):
     smoothed=x*(1-noise.sum())+noise
     return smoothed
 
-def load_latest_model(m):
-    list_of_models = glob.glob('./saved_weights/*.h5')
-    
-    if not os.path.exists("./training_log"):
-        os.mkdir("./training_log")
-    
-    if len(list_of_models) > 0:
-        latest_model = max(list_of_models, key=os.path.getctime)
-        if latest_model.split("_")==sys.argv[0].split(".")[0]:
-            m.load_weights(latest_model)
-            print "MODEL RESTORED."
-        print "NO MODEL TO LOAD."
-    else:
-        print "NO MODEL TO LOAD."
-        log_file = open("./training_log/"+experiment_id+".txt", 'w')
-        log_file.write("Categ train acc\tCateg valid acc\tPerson train acc\tPerson valid acc\n")
-        log_file.close()
-    return m
-
-
-
 
 def trainModel(m):
-    load_latest_model(m)    
     print "Train model..."
     print "Training parameters:"
     os.system("cat config.py")
@@ -153,7 +132,7 @@ def evaluateModel(m):
     pers_accs = []
     categ_losses = []
     pers_losses = []
-    m=load_latest_model(m)
+    m.load_weights('./saved_weights/' + experiment_id + '_esposalles.h5')
     for j in xrange (E.epoch_size/config.batch_size):
         word_images,categories,persons,ids=E.get_batch();
         total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.evaluate(word_images, y=[categories, persons],verbose=0)
