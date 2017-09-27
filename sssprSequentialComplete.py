@@ -17,14 +17,14 @@ import sys
 import numpy as np
 
 batch_size=1
-max_non_improving_epochs=20
+max_non_improving_epochs=50
 min_epochs=2
 verbose_period=5
 im_height=80
 im_width=125
 im_depth=1
 max_seq_len=35
-learning_rate=0.01
+learning_rate=0.001
 lr_decay=0.0001
 max_epochs=400
 
@@ -91,8 +91,13 @@ def visualize_training():
     import matplotlib.pyplot as plt
     plt.plot(cat_train_acc,color='r')
     plt.plot(cat_valid_acc, color='g')
-    plt.ylabel('Category train accuracy')
-    plt.show()
+    plt.title("Category accuracy, train red valid green")
+    plt.show(block=False)
+
+    plt.plot(pers_train_acc, color='r')
+    plt.plot(pers_valid_acc, color='g')
+    plt.title("Person accuracy, train red valid green")
+    plt.show(block=False)
 
 def trainModel(m):
     print "Train model..."
@@ -190,12 +195,15 @@ def generateTestCSV(m,outFilename='output.csv'):
     with open(outFilename,mode='w') as outfile:
         for j in range(E.epoch_size/batch_size):
             word_images,categories,persons,ids=E.get_batch()
-            categories_pred=m.predict_on_batch([word_images])
-            out=E.get_labels_from_categorical(ids,categories_pred)
-            for record  in out:
-                for word_id,category in record:
-                    outfile.write("%s,%s\n"%(word_id,category))
+            pred_pers_cat=m.predict_on_batch([word_images])
+            pred_categories=pred_pers_cat[0]
+            pred_persons=pred_pers_cat[1]
 
+            persons_categories_out=E.get_labels_from_categorical(ids,pred_categories,pred_persons)
+
+            for record  in persons_categories_out[0]:
+                word_id,category,person = record
+                outfile.write("%s,%s,%s\n"%(word_id,category,person))
 
 def main():
 

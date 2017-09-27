@@ -1,0 +1,2 @@
+Categ train acc	Categ valid acc	Person train acc	Person valid acc
+0.47841	0.47939130043	0.49707	0.560105167019
