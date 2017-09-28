@@ -55,7 +55,7 @@ def buildModel():
 
     x2=TimeDistributed(sspr_model)(inputimages)
 
-    x2=Bidirectional(LSTM(100,return_sequences=True,dropout=0.5,recurrent_dropout=0.5))(x2)
+    x2=Bidirectional(LSTM(128,return_sequences=True,dropout=0.5,recurrent_dropout=0.5))(x2)
 
     category_output=TimeDistributed(Dense(6,activation='softmax'))(x2)
     person_output = TimeDistributed(Dense(8, activation='softmax'))(x2)
@@ -148,9 +148,6 @@ def trainModel(m):
         log_file = open("./training_log/"+experiment_id+".txt", 'a')
         log_file.write(str(np.mean(train_categ_accs))+"\t"+str(np.mean(valid_categ_accs))+"\t"+str(np.mean(train_pers_accs))+"\t"+str(np.mean(valid_pers_accs))+"\n")
         log_file.close()
-
-        if visualize:
-            visualize_training()
 
         ValidationACC=np.mean([np.mean(valid_pers_accs),np.mean(valid_categ_accs)])
         

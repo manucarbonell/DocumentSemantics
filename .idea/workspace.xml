@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f4e3fafa-40ed-4302-80bf-9e89e6a39471" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/training_log/sssprSequentialComplete20170926_1139.txt" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sssprSequentialComplete.py" afterPath="$PROJECT_DIR$/sssprSequentialComplete.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/training_log/sssprSequentialComplete.txt" afterPath="$PROJECT_DIR$/training_log/sssprSequentialComplete.txt" />
     </list>
@@ -18,8 +18,8 @@
       <file leaf-file-name="sssprSequentialComplete.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sssprSequentialComplete.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="369">
-              <caret line="205" column="46" lean-forward="true" selection-start-line="205" selection-start-column="46" selection-end-line="205" selection-end-column="46" />
+            <state relative-caret-position="297">
+              <caret line="57" column="29" lean-forward="false" selection-start-line="57" selection-start-column="29" selection-end-line="57" selection-end-column="29" />
               <folding>
                 <element signature="e#0#60#0" expanded="true" />
               </folding>
@@ -52,10 +52,11 @@
       <find>visu</find>
       <find>non_</find>
       <find>m.load_weights('./saved_weights/'+experiment_id+'_esposalles.h5')</find>
-      <find>visuali</find>
-      <find>csv</find>
       <find>get_labels_fr</find>
       <find>get_labels</find>
+      <find>visuali</find>
+      <find>csv</find>
+      <find>lstm</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -245,7 +246,7 @@
         <state relative-caret-position="297">
           <caret line="136" column="69" lean-forward="true" selection-start-line="136" selection-start-column="4" selection-end-line="136" selection-end-column="69" />
           <folding>
-            <element signature="e#0#60#0" expanded="true" />
+            <element signature="e#0#60#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -292,7 +293,7 @@
         <state relative-caret-position="1913">
           <caret line="145" column="13" lean-forward="false" selection-start-line="145" selection-start-column="13" selection-end-line="145" selection-end-column="13" />
           <folding>
-            <element signature="e#0#60#0" expanded="true" />
+            <element signature="e#0#60#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -307,8 +308,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sssprSequentialComplete.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="205" column="46" lean-forward="true" selection-start-line="205" selection-start-column="46" selection-end-line="205" selection-end-column="46" />
+        <state relative-caret-position="297">
+          <caret line="57" column="29" lean-forward="false" selection-start-line="57" selection-start-column="29" selection-end-line="57" selection-end-column="29" />
           <folding>
             <element signature="e#0#60#0" expanded="true" />
           </folding>
