@@ -67,6 +67,7 @@ def buildModel():
 
 def smoothlabel(x,amount=0.25,variance=5):
     mu=amount/x.size
+    
     sigma=mu/variance
     noise=np.random.normal(mu,sigma,x.shape)
     smoothed=x*(1-noise.sum())+noise
