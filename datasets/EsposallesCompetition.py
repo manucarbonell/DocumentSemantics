@@ -56,7 +56,7 @@ class EsposallesDataset():
         im=Image.open(filename)
 
         #Resize image to fit maximum size
-        maxsize = (config.im_height,config.im_width)
+        maxsize = (im_height,im_width)
         im.thumbnail(maxsize)
 
         #Create background to paste image into
