@@ -16,11 +16,11 @@ import matplotlib.pyplot as plt
 from keras.utils import np_utils
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import config
 
-batch_size=config.batch_size
-im_height=config.im_height
-im_width=config.im_width
+
+batch_size=1
+im_height=80
+im_width=125
 
 class EsposallesDataset():
     def __init__(self,BaseDir='/home/ntoledo/datasets/OfficialEsposalles',cvset='train',level='word'):
