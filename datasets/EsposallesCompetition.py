@@ -55,6 +55,7 @@ class EsposallesDataset():
         filename=self.DataDir+'/'+'_'.join(v[0:2])+'/words/'+imageid+".png"
         im=Image.open(filename)
 
+
         #Resize image to fit maximum size
         maxsize = (im_height,im_width)
         im.thumbnail(maxsize)
@@ -70,7 +71,7 @@ class EsposallesDataset():
         background.paste(im,box=(maxsize[1]/2-im.size[0]/2,maxsize[0]/2-im.size[1]/2))
         im=np.array(background)
         im= 1.-np.array(im)/255.
-
+        
         return im
 
 
@@ -132,21 +133,21 @@ class EsposallesDataset():
         ims,cats,pers,names=self.get_batch()
         widths=[]
         heights=[]
-
+        shapes=[]
         for i in range(len(ims[0,:,:,:,0])):
             im=ims[0,i,:,:,0]
 
-            print im.shape
+            shapes.append(im.shape[0])
 
             im=im.astype('uint8')
             im=Image.fromarray(im)
-            im.show()
-            plt.imshow(im)
+            #im.show()
+            #plt.imshow(im)
 
 
-            print names[i],cats[0,i,:],pers[0,i,:]
-            plt.show()
 
+            #plt.show()
+        print np.mean(shapes)
 def main():
     E=EsposallesDataset()
     E.show_batch()

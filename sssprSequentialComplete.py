@@ -10,7 +10,7 @@ from keras.layers.wrappers import Bidirectional
 from keras.layers.recurrent import LSTM
 from keras.models import Model
 import matplotlib.pyplot as plt
-
+from PIL import Image
 import glob
 import os
 import sys
@@ -177,12 +177,72 @@ def evaluateModel(m):
     for j in xrange (E.epoch_size/batch_size):
         word_images,categories,persons,ids=E.get_batch();
         total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.evaluate(word_images, y=[categories, persons],verbose=0)
+
         categ_accs.append(categ_acc)
         categ_losses.append(categ_loss)
         pers_accs.append(pers_acc)
         pers_losses.append(pers_loss)
     print "TEST CATEGORY ACCURACY:",np.mean(categ_acc)
     print "TEST PERSON ACCURACY:",np.mean(pers_acc)
+
+def explore_classification_errors(m):
+    E=EsposallesDataset(cvset='test')
+
+    stop=False
+    m.load_weights('./saved_weights/' + experiment_id + '_esposalles.h5')
+
+    while not stop:
+        word_images,categories,persons,ids=E.get_batch();
+        total_loss, categ_loss, pers_loss, categ_acc, pers_acc = m.evaluate(word_images, y=[categories, persons],verbose=0)
+        categ_error_indexes=[]
+        pers_error_indexes=[]
+        if categ_acc!=1.0 or pers_acc!=1.0:
+            pred_pers_cat=m.predict_on_batch([word_images])
+            pred_categories = pred_pers_cat[0]
+            pred_persons = pred_pers_cat[1]
+            print ids[0][0]
+            print "CATEG PREDICTIONS"
+            for i in range(pred_categories.shape[1]):
+                pred_cat=np.argmax(pred_categories[0, i, :])
+                label_cat=np.argmax(categories[0, i, :])
+                pred_pers=np.argmax(pred_persons[0,i,:])
+                label_pers=np.argmax(persons[0,i,:])
+                if label_cat!=pred_cat:
+                    categ_error_indexes.append(i)
+
+                if label_pers!=pred_pers:
+                    pers_error_indexes.append(i)
+                print E.revcategorydict[pred_cat],
+
+
+            print "\n"
+
+            print "CATEG GT"
+            for i in range(pred_categories.shape[1]):
+                label_cat=np.argmax(categories[0, i, :])
+                print E.revcategorydict[label_cat],
+
+            print
+            print "PERS PREDICTIONS"
+
+            for i in range(pred_categories.shape[1]):
+                pred_pers = np.argmax(pred_persons[0, i, :])
+                print E.revpersondict[pred_pers],
+            print "\n"
+
+
+            print "PERS GT"
+            for i in range(pred_categories.shape[1]):
+                label_pers=np.argmax(persons[0, i, :])
+                print E.revpersondict[label_pers],
+
+            print "\nCATEGORY ERRORS IN WORDS",[ids[0][k] for k in categ_error_indexes]
+            print "PERSON ERRORS IN WORDS",[ids[0][k] for k in pers_error_indexes]
+
+
+            kb_in=raw_input()
+            if kb_in=='q' or kb_in=='Q':
+                stop=True
 
 
 def generateTestCSV(m,outFilename='output.csv'):
@@ -194,8 +254,11 @@ def generateTestCSV(m,outFilename='output.csv'):
         for j in range(E.epoch_size/batch_size):
             word_images,categories,persons,ids=E.get_batch()
             pred_pers_cat=m.predict_on_batch([word_images])
+
             pred_categories=pred_pers_cat[0]
             pred_persons=pred_pers_cat[1]
+
+
 
             persons_categories_out=E.get_labels_from_categorical(ids,pred_categories,pred_persons)
 
@@ -216,8 +279,8 @@ def main():
     elif mode=='eval':
         m = buildModel()
         print "Testing model..."
-        evaluateModel(m)
-
+        #evaluateModel(m)
+        explore_classification_errors(m)
     elif mode=='csvout':
         m = buildModel()
         generateTestCSV(m)
